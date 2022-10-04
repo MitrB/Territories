@@ -38,7 +38,9 @@ def get_cross_product(p1, p2, p3):
 
 
 def calculate_pbp_triangulation(points):
-    points = sorted(points)
+    points.sort(key=lambda x: [x[0], x[1]])
+    print("POINTS:")
+    print(points)
 
     triangles = []
     triangles.append(points[:3])
@@ -46,13 +48,21 @@ def calculate_pbp_triangulation(points):
     points = points[3:]
     while points != []:
         point = points.pop(0)
-        points_done.append(point)
+        print("DONE:")
+        print(points_done)
         convex_shape = convex(points_done)
         convex_shape.append(convex_shape[0])
+        print("CONVEX:")
+        print(convex_shape)
         for i in range(0, len(convex_shape)-1):
             p1, p2, p3 = convex_shape[i], convex_shape[i+1], point
-            if (not get_cross_product(p1, p2, p3)):
+            print(p1 + p2 + p3)
+            if (get_cross_product(p1, p2, p3) < 0):
                 triangles.append([p1, p2, p3])
+        points_done.append(point)
+
+    print("POINTS DONE:")
+    print(points_done)
 
     return (triangles)
 
@@ -70,6 +80,7 @@ class Display(Frame):
         points = self.generate_points()
         for point in points:
             self.drawPoint(point, black)
+        self.add_label(points)
         hull = convex(points)
         # for point in hull:
         #     self.drawPoint(point, green)
@@ -97,10 +108,16 @@ class Display(Frame):
                                 p2[1], p3[0], p3[1], p1[0], p1[1])
 
     def generate_points(self):
-        N = randint(0, 100)
+        # N = randint(0, 100)
+        N = 10
         points = [[randint(0, window_width - 10), randint(0, window_height - 10)]
                   for i in range(N)]
         return points
+
+    def add_label(self, points):
+        for point in points:
+            self.canvas.create_text(point[0], point[1]+15, text="(%s,%s)"%(point[0],point[1]), fill="black", font=('Helvetica 10 bold'))
+
 
 
 def main():
