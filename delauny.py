@@ -56,8 +56,8 @@ def main():
 
     # calculate 
     # N = randint(4, 10)
-    # points = generate_points(5)
-    points = [[522, 743], [280, 612], [1018, 221], [729, 190], [702, 155]]
+    points = generate_points(50)
+    # points = [[522, 743], [280, 612], [1018, 221], [729, 190], [702, 155]]
     info(points)
     hull = convex(points)
     triangles = calculate_pbp_triangulation(points)

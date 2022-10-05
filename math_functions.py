@@ -79,14 +79,24 @@ def calculate_delaunay(triangles):
         new_pair = make_locally_delaunay(pair)
         [new_edge, new_t1, new_t2] = new_pair
 
-        if new_pair != pair:
-            print("dud")
-        #     for i in range(len(pairs)):
-        #         if t1 == pairs[0][1]:
-        #             if find_common_edge(t1, pair[0][2]) == new_pair[0]:
-        #                 pairs[0][1] = new_pair[0]
+        check = 1
 
-        pairs.append([new_pair, 1])
+        if new_pair != pair:
+            check = 0
+            for p in pairs:
+                p = p[0]
+                if t1 == p[1] or t2 == p[1]:
+                    if find_common_edge(new_t1, p[2]) != None:
+                        p[1] = new_t1
+                    elif find_common_edge(new_t2, p[2]) != None:
+                        p[1] = new_t2
+                if t1 == p[2] or t2 == p[2]:
+                    if find_common_edge(new_t1, p[1]) != None:
+                        p[2] = new_t1
+                    elif find_common_edge(new_t2, p[1]) != None:
+                        p[2] = new_t2
+
+        pairs.append([new_pair, check])
 
     pairs = [x[0] for x in pairs]
 
@@ -176,8 +186,6 @@ def make_locally_delaunay(pair):
         t1 = [p_t1, p_t2, edge.pop(0)]
         t2 = [p_t1, p_t2, edge.pop(0)]
         edge = [p_t1, p_t2]
-        print(t1)
-        print(t2)
 
     if len(t1) != 3 or len(t2) != 3 or len(edge) != 2:
         print("ERROR: something went wrong making local delaunay: ")
