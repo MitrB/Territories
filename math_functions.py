@@ -1,5 +1,6 @@
 import math
 from logging import debug, info
+import numpy as np
 
 # https://lvngd.com/blog/convex-hull-graham-scan-algorithm-python/
 
@@ -59,28 +60,27 @@ def calculate_pbp_triangulation(points):
 
 
 def calculate_delaunay(triangles):
+    if len(triangles) == 1:
+        return triangles
     pairs = calculate_triangle_pairs(triangles)
+
 
     # mark all pairs as unchecked
     pairs = [[x, 0] for x in pairs]
 
     while not all_checked(pairs):
-        print("Pairs:")
-        print(pairs)
         # original triangles
         pair_full = pairs.pop(0)
-        print("popped pair:")
-        print(pair_full)
         pair = pair_full[0]
         check = pair_full[1]
-        
         [edge, t1, t2] = pair
 
         # new triangles
         new_pair = make_locally_delaunay(pair)
         [new_edge, new_t1, new_t2] = new_pair
 
-        # if new_pair != pair:
+        if new_pair != pair:
+            print("dud")
         #     for i in range(len(pairs)):
         #         if t1 == pairs[0][1]:
         #             if find_common_edge(t1, pair[0][2]) == new_pair[0]:
@@ -89,6 +89,15 @@ def calculate_delaunay(triangles):
         pairs.append([new_pair, 1])
 
     pairs = [x[0] for x in pairs]
+
+    # TODO: optimise
+    triangles_to_return = []
+    for p in pairs:
+        for t in p[1:]:
+            if t not in triangles_to_return:
+                triangles_to_return.append(t)
+
+    return triangles_to_return
 
 
 def all_checked(pairs):
@@ -105,22 +114,16 @@ def circle_from_triangle(t):
     slope1 = get_slope(p1, p2)
     slope2 = get_slope(p2, p3)
 
-    m1 = -1/slope1
-    m2 = -1/slope2
+    # General equation of circle:
+    # x^2 + y^2 + Ax + By + C = 0
 
-    # y = mx + c
-    c1 = middle1[1] - m1*middle1[0]
-    c2 = middle2[1] - m2*middle2[0]
-    pm_x = ((c2-c1)/(m1-m2))
-    pm_y = m1*pm_x + c1
-    pm = [pm_x, pm_y]
+    a = np.array([[p1[0], p1[1], 1], [p2[0], p2[1], 1], [p3[0], p3[1], 1]])
+    b = np.array([-(p1[0]**2 + p1[1]**2), -(p2[0]**2 + p2[1]**2), -(p3[0]**2 + p3[1]**2)])
+    A,B,C = np.linalg.solve(a, b)
+    A,B,C = A.item(),B.item(),C.item()
 
-    r = math.dist(p1, pm)
-
-    # print("slope1: " + str(slope1))
-    # print("slope2: " + str(slope2))
-    # print("c1: " + str(c1))
-    # print("c2: " + str(c2))
+    pm = [-1*A/2, -1*B/2] 
+    r = math.sqrt((A/2)**2 + (B/2)**2 - C)
 
     return [pm, r]
 
@@ -170,22 +173,21 @@ def make_locally_delaunay(pair):
             p_t1 = p
 
     if math.dist(p_t1, c[0]) < c[1]:
+        t1 = [p_t1, p_t2, edge.pop(0)]
+        t2 = [p_t1, p_t2, edge.pop(0)]
         edge = [p_t1, p_t2]
-        t1.remove(p_t2)
-        t2.remove(p_t1)
-        t1 = [p_t1, p_t2, t1[0]]
-        t2.remove(t1[2])
-        t2 = [p_t1, p_t2, t2[0]]
+        print(t1)
+        print(t2)
+
+    if len(t1) != 3 or len(t2) != 3 or len(edge) != 2:
+        print("ERROR: something went wrong making local delaunay: ")
+        print(edge)
+        print(t1)
+        print(t2)
+        exit(1)
 
     return [edge, t1, t2]
 
 
 if __name__ == '__main__':
-    # circle = circle_from_triangle([[1, 2], [3, 4], [10, 1]])
-    pair = [[[482, 538], [562, 922]], [[529, 414], [482, 538],
-                                       [562, 922]], [[482, 538], [66, 268], [562, 922]]]
-    pair = [[[251, 956], [503, 339]], [[408, 382], [251, 956],
-                                       [503, 339]], [[503, 339], [251, 956], [706, 673]]]
-    pair = make_locally_delaunay(pair)
-    print(pair)
-    # print(circle)
+    pass

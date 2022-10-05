@@ -2,30 +2,23 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import Tk, Canvas, Frame, BOTH
 from logging import debug, info
-import logging
+from random import randint
 from math_functions import *
 from helper import *
 from GLOBVAR import *
+import logging
 
 logging.basicConfig(level=logging.INFO, filename="debug.log", filemode="w")
 
 
 class Display(Frame):
 
-    def __init__(self):
+    def __init__(self, points, triangles):
         super().__init__()
 
         self.initUI()
-        points = generate_points()
-        hull = convex(points)
-        # for point in hull:
-        #     self.drawPoint(point, green)
-        triangles = calculate_pbp_triangulation(points)
-        info(triangles)
-        info(calculate_triangle_pairs(triangles))
-        # calculate_delaunay(triangles)
 
-	# draw
+        # draw
         for triangle in triangles:
             self.drawTriangle(triangle)
         for point in points:
@@ -60,7 +53,19 @@ class Display(Frame):
 def main():
 
     root = Tk()
-    display = Display()
+
+    # calculate 
+    # N = randint(4, 10)
+    # points = generate_points(5)
+    points = [[522, 743], [280, 612], [1018, 221], [729, 190], [702, 155]]
+    info(points)
+    hull = convex(points)
+    triangles = calculate_pbp_triangulation(points)
+    info(triangles)
+    info(calculate_triangle_pairs(triangles))
+    triangles = calculate_delaunay(triangles)
+
+    display = Display(points, triangles)
     w = str(window_width)
     h = str(window_height)
     root.geometry("%sx%s+0+0" % (w, h))
