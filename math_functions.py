@@ -49,7 +49,7 @@ def calculate_pbp_triangulation(points):
         debug(convex_shape)
         for i in range(0, len(convex_shape)-1):
             p1, p2, p3 = convex_shape[i], convex_shape[i+1], point
-            if (get_cross_product(p1, p2, p3) < 0):
+            if (get_cross_product(p1, p2, p3) < 0) and p1[0] != p2[0] != p3[0] and p1[1] != p2[1] != p3[1]:
                 triangles.append([p1, p2, p3])
         points_done.append(point)
 
