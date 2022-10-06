@@ -64,7 +64,6 @@ def calculate_delaunay(triangles):
         return triangles
     pairs = calculate_triangle_pairs(triangles)
 
-
     # mark all pairs as unchecked
     pairs = [[x, 0] for x in pairs]
 
@@ -79,24 +78,29 @@ def calculate_delaunay(triangles):
         new_pair = make_locally_delaunay(pair)
         [new_edge, new_t1, new_t2] = new_pair
 
-        check = 1
-
         if new_pair != pair:
-            check = 0
-            for p in pairs:
-                p = p[0]
+            # pa = [[edge, triangle1, triangle2], check]
+            for pa in pairs:
+                # p = [edge, triangle, triangle]
+                p = pa[0]
+                # check if either of the old triangles was part of a pair
+                # if that is the case 
                 if t1 == p[1] or t2 == p[1]:
                     if find_common_edge(new_t1, p[2]) != None:
-                        p[1] = new_t1
+                        pa[0][1] = new_t1
+                        pa[1] = 0
                     elif find_common_edge(new_t2, p[2]) != None:
-                        p[1] = new_t2
+                        pa[0][1] = new_t2
+                        pa[1] = 0
                 if t1 == p[2] or t2 == p[2]:
                     if find_common_edge(new_t1, p[1]) != None:
-                        p[2] = new_t1
+                        pa[0][2] = new_t1
+                        pa[1] = 0
                     elif find_common_edge(new_t2, p[1]) != None:
-                        p[2] = new_t2
+                        pa[0][2] = new_t2
+                        pa[1] = 0
 
-        pairs.append([new_pair, check])
+        pairs.append([new_pair, 1])
 
     pairs = [x[0] for x in pairs]
 
@@ -128,11 +132,12 @@ def circle_from_triangle(t):
     # x^2 + y^2 + Ax + By + C = 0
 
     a = np.array([[p1[0], p1[1], 1], [p2[0], p2[1], 1], [p3[0], p3[1], 1]])
-    b = np.array([-(p1[0]**2 + p1[1]**2), -(p2[0]**2 + p2[1]**2), -(p3[0]**2 + p3[1]**2)])
-    A,B,C = np.linalg.solve(a, b)
-    A,B,C = A.item(),B.item(),C.item()
+    b = np.array([-(p1[0]**2 + p1[1]**2), -
+                 (p2[0]**2 + p2[1]**2), -(p3[0]**2 + p3[1]**2)])
+    A, B, C = np.linalg.solve(a, b)
+    A, B, C = A.item(), B.item(), C.item()
 
-    pm = [-1*A/2, -1*B/2] 
+    pm = [-1*A/2, -1*B/2]
     r = math.sqrt((A/2)**2 + (B/2)**2 - C)
 
     return [pm, r]
@@ -195,6 +200,19 @@ def make_locally_delaunay(pair):
         exit(1)
 
     return [edge, t1, t2]
+
+def collinear(x1, y1, x2, y2, x3, y3):
+     
+    """ Calculation the area of 
+        triangle. We have skipped
+        multiplication with 0.5 to
+        avoid floating point computations """
+    a = x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2)
+ 
+    if (a == 0):
+        return True
+    else:
+        return False
 
 
 if __name__ == '__main__':
