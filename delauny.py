@@ -2,7 +2,7 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import Tk, Canvas, Frame, BOTH
 from logging import debug, info
-from random import randint
+from random import randint,choice
 from math_functions import *
 from helper import *
 from GLOBVAR import *
@@ -21,9 +21,9 @@ class Display(Frame):
         # draw
         for triangle in triangles:
             self.drawTriangle(triangle)
-        for point in points:
-            self.drawPoint(point, black)
-        self.add_label(points)
+        # for point in points:
+        #     self.drawPoint(point, black)
+        # self.add_label(points)
 
     def initUI(self):
 
@@ -41,8 +41,10 @@ class Display(Frame):
 
     def drawTriangle(self, triangle):
         p1, p2, p3 = triangle[0], triangle[1], triangle[2]
-        self.canvas.create_line(p1[0], p1[1], p2[0],
-                                p2[1], p3[0], p3[1], p1[0], p1[1], fill=python_green)
+        #self.canvas.create_line(p1[0], p1[1], p2[0],
+        #                        p2[1], p3[0], p3[1], p1[0], p1[1], fill=python_green)
+        color = "#"+''.join([choice('0123456789ABCDEF') for j in range(6)])
+        self.canvas.create_polygon(p1[0],p1[1],p2[0],p2[1],p3[0],p3[1], fill=color)
 
     def add_label(self, points):
         for point in points:
@@ -54,8 +56,8 @@ def main():
 
 
     # calculate 
-    N = randint(10, 200)
-    # N = 10
+    N = randint(10, 500)
+    # N = 234
     points = generate_points(N)
     info(points)
     hull = convex(points)
