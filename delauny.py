@@ -54,14 +54,14 @@ def main():
 
 
     # calculate 
-    N = randint(10, 500)
+    N = randint(10, 200)
+    # N = 10
     points = generate_points(N)
-    points = [[145,644],[164,807],[70,925],[145,1051]]
     info(points)
     hull = convex(points)
     triangles = calculate_pbp_triangulation(points)
     info(triangles)
-    # triangles = calculate_delaunay(triangles)
+    triangles = calculate_delaunay(triangles)
     info(triangles)
 
 

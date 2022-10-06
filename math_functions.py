@@ -39,7 +39,7 @@ def calculate_pbp_triangulation(points):
     triangles.append(points[:3])
     points_done = points[:3]
     points = points[3:]
-    while points != []:
+    while points != []:  # :
         point = points.pop(0)
         debug("DONE:")
         debug(points_done)
@@ -49,7 +49,7 @@ def calculate_pbp_triangulation(points):
         debug(convex_shape)
         for i in range(0, len(convex_shape)-1):
             p1, p2, p3 = convex_shape[i], convex_shape[i+1], point
-            if (get_cross_product(p1, p2, p3) < 0) and p1[0] != p2[0] != p3[0] and p1[1] != p2[1] != p3[1]:
+            if (get_cross_product(p1, p2, p3) < 0) and not collinear(p1, p2, p3):
                 triangles.append([p1, p2, p3])
         points_done.append(point)
 
@@ -84,7 +84,7 @@ def calculate_delaunay(triangles):
                 # p = [edge, triangle, triangle]
                 p = pa[0]
                 # check if either of the old triangles was part of a pair
-                # if that is the case 
+                # if that is the case
                 if t1 == p[1] or t2 == p[1]:
                     if find_common_edge(new_t1, p[2]) != None:
                         pa[0][1] = new_t1
@@ -187,6 +187,7 @@ def make_locally_delaunay(pair):
         if p not in t1:
             p_t1 = p
 
+
     if math.dist(p_t1, c[0]) < c[1]:
         t1 = [p_t1, p_t2, edge.pop(0)]
         t2 = [p_t1, p_t2, edge.pop(0)]
@@ -201,14 +202,18 @@ def make_locally_delaunay(pair):
 
     return [edge, t1, t2]
 
-def collinear(x1, y1, x2, y2, x3, y3):
-     
+
+def collinear(p1, p2, p3):
+    x1, y1 = p1
+    x2, y2 = p2
+    x3, y3 = p3
+
     """ Calculation the area of 
         triangle. We have skipped
         multiplication with 0.5 to
         avoid floating point computations """
     a = x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2)
- 
+
     if (a == 0):
         return True
     else:
