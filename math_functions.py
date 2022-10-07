@@ -64,62 +64,56 @@ def calculate_delaunay(triangles):
         return triangles
     pairs = calculate_triangle_pairs(triangles)
 
-    # mark all pairs as unchecked
-    pairs = [[x, 0] for x in pairs]
+    edge_stack = [key for key in pairs]
+    edge_mark = {edge: True for edge in pairs}
 
-    while not all_checked(pairs):
-        # original triangles
-        pair_full = pairs.pop(0)
-        pair = pair_full[0]
-        check = pair_full[1]
-        [edge, t1, t2] = pair
+    while edge_stack != []:
+        # pop edge and unmark
+        edge = edge_stack.pop()
+        edge_mark[edge] = False
+        pair = pairs[edge]
+        # check = pair_full[1]
+        [t1, t2] = pair
 
         # new triangles
-        new_pair = make_locally_delaunay(pair)
+        new_pair = make_locally_delaunay([edge, t1, t2])
         [new_edge, new_t1, new_t2] = new_pair
 
-        if new_pair != pair:
-            # pa = [[edge, triangle1, triangle2], check]
-            for pa in pairs:
-                # p = [edge, triangle, triangle]
-                p = pa[0]
-                # check if either of the old triangles was part of a pair
-                # if that is the case
-                if t1 == p[1] or t2 == p[1]:
-                    if find_common_edge(new_t1, p[2]) != None:
-                        pa[0][1] = new_t1
-                        pa[1] = 0
-                    elif find_common_edge(new_t2, p[2]) != None:
-                        pa[0][1] = new_t2
-                        pa[1] = 0
-                if t1 == p[2] or t2 == p[2]:
-                    if find_common_edge(new_t1, p[1]) != None:
-                        pa[0][2] = new_t1
-                        pa[1] = 0
-                    elif find_common_edge(new_t2, p[1]) != None:
-                        pa[0][2] = new_t2
-                        pa[1] = 0
+        pairs[new_edge] = [new_t1, new_t2]
 
-        pairs.append([new_pair, 1])
+        # If we had to flip the edge, there are 4 possible triangles that have a new pair
+        if new_edge != edge:
+            # delete old edge
+            # unmark new edge
+            pairs.pop(edge)
+            edge_mark[new_edge] = False
+            # get edges from new pairs
+            pair_edges_to_change = list(
+                edges_from_triangle(t1) + edges_from_triangle(t2))
+            pair_edges_to_change.remove(edge)
+            pair_edges_to_change.remove(edge)
 
-    pairs = [x[0] for x in pairs]
+            # Update triangles
+            for pe in pair_edges_to_change:
+                if pe in pairs:
+                    [tpe1, tpe2] = pairs[pe]
+                    if find_common_edge(tpe1, new_t1) == pe and sorted(tpe1) != sorted(new_t1):
+                        pairs[pe] = [tpe1, new_t1]
+                    elif find_common_edge(tpe2, new_t2) == pe and sorted(tpe2) != sorted(new_t2):
+                        pairs[pe] = [new_t2, tpe2]
+
+                    # if not marked add to the stack for re-evaluation
+                    if not edge_mark[pe]:
+                        edge_stack.append(pe)
 
     # TODO: optimise
     triangles_to_return = []
-    for p in pairs:
-        for t in p[1:]:
+    for key, value in pairs.items():
+        for t in value:
             if t not in triangles_to_return:
-                triangles_to_return.append(t)
+                triangles_to_return.append(t)   
 
     return triangles_to_return
-
-
-def all_checked(pairs):
-    for pair in pairs:
-        if pair[1] == 0:
-            return False
-    return True
-
 
 def circle_from_triangle(t):
     [p1, p2, p3] = t
@@ -144,30 +138,31 @@ def circle_from_triangle(t):
 
 
 def calculate_triangle_pairs(triangles):
-    pairs = []
+    pairs = {}
     for i in range(len(triangles)):
         for j in range(i + 1, len(triangles)):
             t1 = triangles[i]
             t2 = triangles[j]
             edge = find_common_edge(t1, t2)
             if edge != None:
-                pairs.append([edge, t1, t2])
+                pairs[edge] = [t1, t2]
 
     return pairs
 
 
+# returns a sorted edge because of it's purpose as a key in the pairs dictionary
 def find_common_edge(t1, t2):
     edges1 = edges_from_triangle(t1)
     edges2 = edges_from_triangle(t2)
     for e1 in edges1:
         for e2 in edges2:
             if e1[0] in e2 and e1[1] in e2:
-                return e1
+                return tuple(sorted(e1))
     return None
 
 
 def edges_from_triangle(t):
-    return [[t[0], t[1]], [t[1], t[2]], [t[2], t[0]]]
+    return (tuple(sorted((t[0], t[1]))), tuple(sorted((t[1], t[2]))), tuple(sorted((t[2], t[0]))))
 
 
 def make_locally_delaunay(pair):
@@ -187,11 +182,10 @@ def make_locally_delaunay(pair):
         if p not in t1:
             p_t1 = p
 
-
     if math.dist(p_t1, c[0]) < c[1]:
-        t1 = [p_t1, p_t2, edge.pop(0)]
-        t2 = [p_t1, p_t2, edge.pop(0)]
-        edge = [p_t1, p_t2]
+        t1 = (p_t1, p_t2, edge[0])
+        t2 = (p_t1, p_t2, edge[1])
+        edge = tuple(sorted((p_t1, p_t2)))
 
     if len(t1) != 3 or len(t2) != 3 or len(edge) != 2:
         print("ERROR: something went wrong making local delaunay: ")

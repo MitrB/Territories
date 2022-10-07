@@ -1,6 +1,4 @@
 from tkinter import *
-from tkinter import ttk
-from tkinter import Tk, Canvas, Frame, BOTH
 from logging import debug, info
 from random import randint
 from math_functions import *
@@ -52,10 +50,9 @@ class Display(Frame):
 
 def main():
 
-
     # calculate 
-    N = randint(10, 200)
-    # N = 10
+    # N = randint(10, 200)
+    N = 2000
     points = generate_points(N)
     info(points)
     hull = convex(points)
