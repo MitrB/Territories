@@ -10,6 +10,10 @@ import logging
 
 logging.basicConfig(level=logging.INFO, filename="debug.log", filemode="w")
 
+# disable/enable logging
+logging.disable(logging.DEBUG)
+logging.disable(logging.INFO)
+
 
 class Display(Frame):
 
