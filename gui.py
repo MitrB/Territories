@@ -21,9 +21,10 @@ class Display(Frame):
         # draw
         for triangle in triangles:
             self.drawTriangle(triangle)
-        # for point in points:
-        #     self.drawPoint(point, black)
-        # self.add_label(points)
+            self.drawTriangleOutline(triangle)
+        for point in points:
+            self.drawPoint(point, black)
+        self.add_label(points)
 
     def initUI(self):
 
@@ -41,15 +42,18 @@ class Display(Frame):
 
     def drawTriangle(self, triangle):
         p1, p2, p3 = triangle[0], triangle[1], triangle[2]
-        #self.canvas.create_line(p1[0], p1[1], p2[0],
-        #                        p2[1], p3[0], p3[1], p1[0], p1[1], fill=python_green)
         color = "#"+''.join([choice('0123456789ABCDEF') for j in range(6)])
         self.canvas.create_polygon(p1[0],p1[1],p2[0],p2[1],p3[0],p3[1], fill=color)
+
+    def drawTriangleOutline(self, triangle):
+        p1, p2, p3 = triangle[0], triangle[1], triangle[2]
+        self.canvas.create_line(p1[0], p1[1], p2[0],
+                               p2[1], p3[0], p3[1], p1[0], p1[1], fill="black")
 
     def add_label(self, points):
         for point in points:
             self.canvas.create_text(point[0], point[1]+15, text="(%s,%s)" % (
-                point[0], point[1]), fill="red", font=('Helvetica 10 bold'))
+                point[0], point[1]), fill="black", font=('Helvetica 10 bold'))
 
 
 def main():
