@@ -39,7 +39,7 @@ def calculate_pbp_triangulation(points):
     triangles.append(points[:3])
     points_done = points[:3]
     points = points[3:]
-    while points != []:  # :
+    while points != []: 
         point = points.pop(0)
         debug("DONE:")
         debug(points_done)

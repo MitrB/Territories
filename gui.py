@@ -56,8 +56,8 @@ def main():
 
 
     # calculate 
-    N = randint(10, 500)
-    # N = 234
+    # N = randint(10, 500)
+    N = 650
     points = generate_points(N)
     info(points)
     hull = convex(points)
