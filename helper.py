@@ -26,4 +26,4 @@ def __add_points_until_full(points, N):
     return points
 
 def __generate_random_point(width, height):
-    return (randint(10, width - 10), (10, height - 10))
+    return (randint(10, width - 10), randint(10, height - 10))
