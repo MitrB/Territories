@@ -31,14 +31,30 @@ def get_cross_product(p1, p2, p3):
 
 
 def calculate_pbp_triangulation(points):
+    if len(points) < 3:
+        return [] 
     points.sort(key=lambda x: [x[0], x[1]])
     debug("POINTS:")
     debug(points)
 
     triangles = []
-    triangles.append(points[:3])
-    points_done = points[:3]
-    points = points[3:]
+    # make the first triangle
+    p1 = points[0]
+    p2 = points[1]
+    # TODO: clean up
+    for i in range(2,len(points)):
+        p3 = points[i]
+        if not collinear(p1, p2, p3):
+            triangles.append([p1,p2,p3])
+            break
+        # if p3 is the last point in points and it a triangle can't be made, all points are collinear
+        if p3 == points[-1]:
+            return []
+        
+    points_done = [p1,p2,p3]
+    points.remove(p1)
+    points.remove(p2)
+    points.remove(p3)
     while points != []: 
         point = points.pop(0)
         debug("DONE:")

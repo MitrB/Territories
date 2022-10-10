@@ -65,11 +65,10 @@ def main():
 
     # calculate 
     # N = randint(10, 500)
-    N = 650
+    N = 5
     points = generate_points(N)
     info(points)
-    hull = convex(points)
-    triangles = calculate_pbp_triangulation(points)
+    triangles = calculate_pbp_triangulation(points.copy())
     info(triangles)
     triangles = calculate_delaunay(triangles)
     info(triangles)
