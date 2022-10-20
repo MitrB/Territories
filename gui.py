@@ -64,8 +64,7 @@ def main():
 
 
     # calculate 
-    # N = randint(10, 500)
-    N = 5
+    N = 1000
     points = generate_points(N)
     info(points)
     triangles = calculate_pbp_triangulation(points.copy())

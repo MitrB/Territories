@@ -10,7 +10,7 @@ class PointDistribution(Enum):
     SPIRAL = 2
 
 
-def generate_points(N=10, point_distribution=PointDistribution.GRID):
+def generate_points(N=10, point_distribution=PointDistribution.RANDOM):
     match point_distribution:
         case PointDistribution.RANDOM:
             points = [__generate_random_point(
