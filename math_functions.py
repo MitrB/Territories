@@ -79,17 +79,18 @@ def calculate_delaunay(triangles):
         new_pair = make_locally_delaunay([edge, t1, t2])
         [new_edge, new_t1, new_t2] = new_pair
 
-        pairs[new_edge] = [new_t1, new_t2]
-
         # If we had to flip the edge, there are 4 possible triangles that have a new pair
         if new_edge != edge:
-            # delete old edge
-            # unmark new edge
+            # delete old edge, add new edge
             pairs.pop(edge)
+            pairs[new_edge] = [new_t1, new_t2]
+            # unmark new edge
             edge_mark[new_edge] = False
             # get edges from new pairs
             pair_edges_to_change = list(
                 edges_from_triangle(t1) + edges_from_triangle(t2))
+            print(edge)
+            print(pair_edges_to_change)
             pair_edges_to_change.remove(edge)
             pair_edges_to_change.remove(edge)
 
@@ -97,14 +98,19 @@ def calculate_delaunay(triangles):
             for pe in pair_edges_to_change:
                 if pe in pairs:
                     [tpe1, tpe2] = pairs[pe]
-                    if find_common_edge(tpe1, new_t1) == pe and sorted(tpe1) != sorted(new_t1):
+                    if find_common_edge(tpe1, new_t1) == pe and not (tpe1 == t1 or tpe1 == t2):
                         pairs[pe] = [tpe1, new_t1]
-                    elif find_common_edge(tpe2, new_t2) == pe and sorted(tpe2) != sorted(new_t2):
+                    elif find_common_edge(tpe2, new_t2) == pe and not (tpe2 == t1 or tpe2 == t2):
                         pairs[pe] = [new_t2, tpe2]
+                    elif find_common_edge(tpe2, new_t1) == pe and not (tpe2 == t1 or tpe2 == t2):
+                        pairs[pe] = [tpe2, new_t1]
+                    elif find_common_edge(tpe1, new_t2) == pe and not (tpe1 == t1 or tpe1 == t2):
+                        pairs[pe] = [new_t2, tpe1]
 
                     # if not marked add to the stack for re-evaluation
                     if not edge_mark[pe]:
                         edge_stack.append(pe)
+                        edge_mark[pe] = True
 
     # TODO: optimise
     triangles_to_return = []
@@ -117,24 +123,31 @@ def calculate_delaunay(triangles):
 
 def circle_from_triangle(t):
     [p1, p2, p3] = t
-    middle1 = ((p1[0] + p2[0])/2, (p1[1]+p2[1])/2)
-    middle2 = ((p2[0] + p3[0])/2, (p2[1]+p3[1])/2)
-    slope1 = get_slope(p1, p2)
-    slope2 = get_slope(p2, p3)
-
-    # General equation of circle:
-    # x^2 + y^2 + Ax + By + C = 0
-
-    a = np.array([[p1[0], p1[1], 1], [p2[0], p2[1], 1], [p3[0], p3[1], 1]])
-    b = np.array([-(p1[0]**2 + p1[1]**2), -
-                 (p2[0]**2 + p2[1]**2), -(p3[0]**2 + p3[1]**2)])
-    A, B, C = np.linalg.solve(a, b)
-    A, B, C = A.item(), B.item(), C.item()
-
-    pm = [-1*A/2, -1*B/2]
-    r = math.sqrt((A/2)**2 + (B/2)**2 - C)
+    circle = define_circle(p1, p2, p3)
+    [pm, r] = circle
 
     return [pm, r]
+
+# https://stackoverflow.com/questions/28910718/give-3-points-and-a-plot-circle
+def define_circle(p1, p2, p3):
+    """
+    Returns the center and radius of the circle passing the given 3 points.
+    In case the 3 points form a line, returns (None, infinity).
+    """
+    temp = p2[0] * p2[0] + p2[1] * p2[1]
+    bc = (p1[0] * p1[0] + p1[1] * p1[1] - temp) / 2
+    cd = (temp - p3[0] * p3[0] - p3[1] * p3[1]) / 2
+    det = (p1[0] - p2[0]) * (p2[1] - p3[1]) - (p2[0] - p3[0]) * (p1[1] - p2[1])
+
+    if abs(det) < 1.0e-6:
+        return (None, np.inf)
+
+    # Center of circle
+    cx = (bc*(p2[1] - p3[1]) - cd*(p1[1] - p2[1])) / det
+    cy = ((p1[0] - p2[0]) * cd - (p2[0] - p3[0]) * bc) / det
+
+    radius = np.sqrt((cx - p1[0])**2 + (cy - p1[1])**2)
+    return ((cx, cy), radius)
 
 
 def calculate_triangle_pairs(triangles):
@@ -150,14 +163,21 @@ def calculate_triangle_pairs(triangles):
     return pairs
 
 
-# returns a sorted edge because of it's purpose as a key in the pairs dictionary
 def find_common_edge(t1, t2):
-    edges1 = edges_from_triangle(t1)
-    edges2 = edges_from_triangle(t2)
-    for e1 in edges1:
-        for e2 in edges2:
-            if e1[0] in e2 and e1[1] in e2:
-                return tuple(sorted(e1))
+    """returns 1 common edge of 2 given triangles"""
+    # edges1 = edges_from_triangle(t1)
+    # edges2 = edges_from_triangle(t2)
+    # for e1 in edges1:
+    #     for e2 in edges2:
+    #         if e1[0] in e2 and e1[1] in e2:
+    #             return tuple(sorted(e1))
+    edges = zip(t1,t2)
+
+    for edge in edges:
+        [p1, p2] = edge
+        if ((p1 in t2 and p2 in t1) or (p1 in t1 and p2 in t2)) and p1 != p2:
+            return tuple(sorted(edge))
+    
     return None
 
 
@@ -185,7 +205,10 @@ def make_locally_delaunay(pair):
     if math.dist(p_t1, c[0]) < c[1]:
         t1 = (p_t1, p_t2, edge[0])
         t2 = (p_t1, p_t2, edge[1])
-        edge = tuple(sorted((p_t1, p_t2)))
+
+        # first is faster but might be wrong, but shouldn't be 
+        # edge = tuple(sorted((p_t1, p_t2)))
+        edge = find_common_edge(t1, t2)
 
     if len(t1) != 3 or len(t2) != 3 or len(edge) != 2:
         print("ERROR: something went wrong making local delaunay: ")

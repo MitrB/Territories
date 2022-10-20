@@ -5,6 +5,7 @@ from math_functions import *
 from helper import *
 from GLOBVAR import *
 import logging
+from line_profiler import LineProfiler
 
 logging.basicConfig(level=logging.INFO, filename="debug.log", filemode="w")
 
@@ -52,8 +53,9 @@ def main():
 
     # calculate 
     # N = randint(10, 200)
-    N = 2000
+    N = 1000
     points = generate_points(N)
+    # points = [(721, 763), (580, 238), (203, 124), (942, 524), (575, 168)]
     info(points)
     hull = convex(points)
     triangles = calculate_pbp_triangulation(points)
@@ -73,4 +75,12 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    # main()
+    lp = LineProfiler()
+    lp.add_function(calculate_delaunay)
+    lp.add_function(calculate_triangle_pairs)
+    lp.add_function(find_common_edge)
+    lp.add_function(make_locally_delaunay)
+    lp_wrapper = lp(main)
+    lp_wrapper()
+    lp.print_stats()
