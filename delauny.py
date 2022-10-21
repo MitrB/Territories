@@ -53,7 +53,7 @@ def main():
 
     # calculate 
     # N = randint(10, 200)
-    N = 1000
+    N = 100
     points = generate_points(N)
     # points = [(721, 763), (580, 238), (203, 124), (942, 524), (575, 168)]
     info(points)

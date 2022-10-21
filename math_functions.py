@@ -89,8 +89,6 @@ def calculate_delaunay(triangles):
             # get edges from new pairs
             pair_edges_to_change = list(
                 edges_from_triangle(t1) + edges_from_triangle(t2))
-            print(edge)
-            print(pair_edges_to_change)
             pair_edges_to_change.remove(edge)
             pair_edges_to_change.remove(edge)
 
