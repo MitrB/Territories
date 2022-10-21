@@ -184,12 +184,14 @@ def find_common_edge(t1, t2):
     # for e1 in edges1:
     #     for e2 in edges2:
     #         if e1[0] in e2 and e1[1] in e2:
+    #             print(e1)
     #             return tuple(sorted(e1))
-    edges = zip(t1,t2)
+
+    edges = zip([t1[1], t1[2], t1[0]], t1)
 
     for edge in edges:
         [p1, p2] = edge
-        if ((p1 in t2 and p2 in t1) or (p1 in t1 and p2 in t2)) and p1 != p2:
+        if ((p1 in t2 and p2 in t2)):
             return tuple(sorted(edge))
     
     return None

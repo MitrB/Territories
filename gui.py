@@ -63,9 +63,8 @@ class Display(Frame):
 def main():
 
     # calculate
-    N = 100
+    N = 2000
     points = generate_points(N)
-    # points = [(721, 763), (580, 238), (203, 124), (942, 524), (575, 168)]
     info(points)
     triangles = calculate_pbp_triangulation(points.copy())
     info(triangles)
