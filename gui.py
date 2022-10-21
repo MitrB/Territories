@@ -1,12 +1,11 @@
 from tkinter import *
-from tkinter import ttk
-from tkinter import Tk, Canvas, Frame, BOTH
 from logging import debug, info
 from random import randint, choice
 from math_functions import *
 from helper import *
 from GLOBVAR import *
 import logging
+from line_profiler import LineProfiler
 
 logging.basicConfig(level=logging.INFO, filename="debug.log", filemode="w")
 
@@ -66,6 +65,7 @@ def main():
     # calculate
     N = 100
     points = generate_points(N)
+    # points = [(721, 763), (580, 238), (203, 124), (942, 524), (575, 168)]
     info(points)
     triangles = calculate_pbp_triangulation(points.copy())
     info(triangles)
