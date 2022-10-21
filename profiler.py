@@ -1,7 +1,8 @@
-import line_profiler
 from line_profiler import LineProfiler
+from math_functions import *
+from gui import main
 
-lp = LineProfiler()
+lp = LineProfiler(main)
 lp.add_function(calculate_delaunay)
 lp.add_function(calculate_triangle_pairs)
 lp.add_function(find_common_edge)
