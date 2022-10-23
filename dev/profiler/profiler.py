@@ -1,6 +1,6 @@
 from line_profiler import LineProfiler
-from math_functions import *
-from gui import main
+from src.math_functions.math_functions import *
+from src.gui.gui import main
 
 lp = LineProfiler(main)
 lp.add_function(calculate_delaunay)

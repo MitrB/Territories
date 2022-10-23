@@ -1,5 +1,5 @@
 from random import randint
-from vars.GLOBVAR import *
+from src.vars.GLOBVAR import *
 from enum import *
 import math
 

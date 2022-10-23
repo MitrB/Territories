@@ -12,6 +12,7 @@ tk = "^0.1.0"
 
 [tool.poetry.scripts]
 delauny = "gui.gui:main"
+tests = "tests.tests:main"
 
 
 [build-system]

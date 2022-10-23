@@ -1,5 +1,5 @@
 import unittest
-from gui.helper import *
+from src.gui.helper import *
 
 class TestMakeNRandomPoints(unittest.TestCase):
 
@@ -24,5 +24,8 @@ class TestMakeNRandomPoints(unittest.TestCase):
             self.assertEqual(type(1), type(point[0]))
             self.assertEqual(type(1), type(point[1]))
 
-if __name__ == '__main__':
+def main():
     unittest.main()
+
+if __name__ == '__main__':
+    main()
