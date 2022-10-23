@@ -1,11 +1,9 @@
 from tkinter import *
 from logging import debug, info
 from random import randint, choice
-from math_functions import *
-from helper import *
-from GLOBVAR import *
+from math_functions.math_functions import *
+from .helper import *
 import logging
-from line_profiler import LineProfiler
 
 logging.basicConfig(level=logging.INFO, filename="debug.log", filemode="w")
 

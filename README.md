@@ -2,11 +2,10 @@
 Simulations of territories and nations. Currently it only makes Delaunay triangulations :)
 
 ## Dependencies
-install these before running
+Use `poetry` to run
 
-1. python (obviously :p )
-2. numpy
-3. tkinter
+1. poetry install
+2. poetry run delauny
 
 ## Running
 

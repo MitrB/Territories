@@ -1,5 +1,5 @@
 import unittest
-from helper import *
+from gui.helper import *
 
 class TestMakeNRandomPoints(unittest.TestCase):
 
