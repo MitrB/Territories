@@ -19,12 +19,12 @@ poetry run delauny
 poetry run territories [options]
 
 OPTIONS
-	**-s** 
+	-s 
 		Saves point generation to 'points' file
 
-	**-l**
+	-l
 		Loads point generation from 'points' file
 
-	**-p** N
+	-p N
 		Demand N points	
 ```
