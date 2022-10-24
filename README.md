@@ -2,10 +2,29 @@
 Simulations of territories and nations. Currently it only makes Delaunay triangulations :)
 
 ## Dependencies
-Use `poetry` to run
+Needs `poetry` to run. 
+Install the dependencies with poetry:
 
- poetry install
+```
+poetry install
+```
 
 ## Running
 
+```
 poetry run delauny
+```
+
+```
+poetry run territories [options]
+
+OPTIONS
+	**-s** 
+		Saves point generation to 'points' file
+
+	**-l**
+		Loads point generation from 'points' file
+
+	**-p** N
+		Demand N points	
+```
