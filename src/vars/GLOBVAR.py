@@ -1,6 +1,10 @@
 window_width = 1920
 window_height = 1080
 python_green = "#476042"
-green = "#000fff000"
+sand = "#deb83c"
+green = "#37822b"
+d_green = "#12420b"
+fris = "#748c70"
+cold = "#70868c"
+swamp = "#2b302b"
 black = "#000000"
-color2 = "#125233"

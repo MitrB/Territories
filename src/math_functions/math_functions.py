@@ -32,7 +32,7 @@ def get_cross_product(p1, p2, p3):
 
 def calculate_pbp_triangulation(points):
     if len(points) < 3:
-        return [] 
+        return []
     points.sort(key=lambda x: [x[0], x[1]])
     debug("POINTS:")
     debug(points)
@@ -42,20 +42,20 @@ def calculate_pbp_triangulation(points):
     p1 = points[0]
     p2 = points[1]
     # TODO: clean up
-    for i in range(2,len(points)):
+    for i in range(2, len(points)):
         p3 = points[i]
         if not collinear(p1, p2, p3):
-            triangles.append([p1,p2,p3])
+            triangles.append((p1, p2, p3))
             break
         # if p3 is the last point in points and it a triangle can't be made, all points are collinear
         if p3 == points[-1]:
             return []
-        
-    points_done = [p1,p2,p3]
+
+    points_done = [p1, p2, p3]
     points.remove(p1)
     points.remove(p2)
     points.remove(p3)
-    while points != []: 
+    while points != []:
         point = points.pop(0)
         debug("DONE:")
         debug(points_done)
@@ -66,7 +66,7 @@ def calculate_pbp_triangulation(points):
         for i in range(0, len(convex_shape)-1):
             p1, p2, p3 = convex_shape[i], convex_shape[i+1], point
             if (get_cross_product(p1, p2, p3) < 0) and not collinear(p1, p2, p3):
-                triangles.append([p1, p2, p3])
+                triangles.append((p1, p2, p3))
         points_done.append(point)
 
     debug("POINTS DONE:")
@@ -131,9 +131,10 @@ def calculate_delaunay(triangles):
     for key, value in pairs.items():
         for t in value:
             if t not in triangles_to_return:
-                triangles_to_return.append(t)   
+                triangles_to_return.append(t)
 
     return triangles_to_return
+
 
 def circle_from_triangle(t):
     [p1, p2, p3] = t
@@ -143,6 +144,8 @@ def circle_from_triangle(t):
     return [pm, r]
 
 # https://stackoverflow.com/questions/28910718/give-3-points-and-a-plot-circle
+
+
 def define_circle(p1, p2, p3):
     """
     Returns the center and radius of the circle passing the given 3 points.
@@ -179,21 +182,13 @@ def calculate_triangle_pairs(triangles):
 
 def find_common_edge(t1, t2):
     """returns 1 common edge of 2 given triangles"""
-    # edges1 = edges_from_triangle(t1)
-    # edges2 = edges_from_triangle(t2)
-    # for e1 in edges1:
-    #     for e2 in edges2:
-    #         if e1[0] in e2 and e1[1] in e2:
-    #             print(e1)
-    #             return tuple(sorted(e1))
-
     edges = zip([t1[1], t1[2], t1[0]], t1)
 
     for edge in edges:
         [p1, p2] = edge
         if ((p1 in t2 and p2 in t2)):
             return tuple(sorted(edge))
-    
+
     return None
 
 
@@ -222,7 +217,7 @@ def make_locally_delaunay(pair):
         t1 = (p_t1, p_t2, edge[0])
         t2 = (p_t1, p_t2, edge[1])
 
-        # first is faster but might be wrong, but shouldn't be 
+        # first is faster but might be wrong, but shouldn't be
         # edge = tuple(sorted((p_t1, p_t2)))
         edge = find_common_edge(t1, t2)
 

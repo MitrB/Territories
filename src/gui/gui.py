@@ -14,18 +14,9 @@ logging.disable(logging.INFO)
 
 class Display(Frame):
 
-    def __init__(self, points, triangles):
+    def __init__(self):
         super().__init__()
-
         self.initUI()
-
-        # draw
-        for triangle in triangles:
-            self.drawTriangle(triangle)
-            self.drawTriangleOutline(triangle)
-        for point in points:
-            self.drawPoint(point, black)
-        self.add_label(points)
 
     def initUI(self):
 
@@ -41,9 +32,11 @@ class Display(Frame):
         x2, y2 = (point[0] + 4), (point[1] + 4)
         self.canvas.create_oval(x1, y1, x2, y2, fill=color)
 
-    def drawTriangle(self, triangle):
+    def drawTriangle(self, triangle, color="R"):
         p1, p2, p3 = triangle[0], triangle[1], triangle[2]
-        color = "#"+''.join([choice('0123456789ABCDEF') for j in range(6)])
+        if color == "R":
+            color = "#"+''.join([choice('0123456789ABCDEF') for j in range(6)])
+
         self.canvas.create_polygon(
             p1[0], p1[1], p2[0], p2[1], p3[0], p3[1], fill=color)
 
@@ -61,7 +54,7 @@ class Display(Frame):
 def main():
 
     # calculate
-    N = 125
+    N = 25
     points = generate_points(N)
     info(points)
     triangles = calculate_pbp_triangulation(points.copy())
@@ -71,13 +64,36 @@ def main():
 
     # Tk
     root = Tk()
-    display = Display(points, triangles)
+    display = Display()
     w = str(window_width)
     h = str(window_height)
     root.geometry("%sx%s+0+0" % (w, h))
     root.configure(bg="white")
+
+    # draw
+    for triangle in triangles:
+        display.drawTriangle(triangle)
+        display.drawTriangleOutline(triangle)
+    for point in points:
+        display.drawPoint(point, black)
+    display.add_label(points)
+
     root.mainloop()
 
+
+def draw_territories(map):
+        # Tk
+    root = Tk()
+    display = Display()
+    w = str(window_width)
+    h = str(window_height)
+    root.geometry("%sx%s+0+0" % (w, h))
+    root.configure(bg="white")
+
+    for triangle in map.polygons.keys():
+        display.drawTriangle(triangle.shape, triangle.color)
+
+    root.mainloop()
 
 if __name__ == '__main__':
     main()

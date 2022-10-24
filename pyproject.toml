@@ -15,6 +15,7 @@ line-profiler = "^3.5.1"
 delauny = "gui.gui:main"
 tests = "tests.tests:main"
 profile = "dev.profiler.profiler:profile"
+territories = "territories.territories:main"
 
 
 [build-system]
