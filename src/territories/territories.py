@@ -54,4 +54,4 @@ def main(args=sys.argv):
         territories.add_neighbour(pair[1], pair[0])
 
     # gui
-    draw_territories(territories, points)
+    draw_territories(territories)

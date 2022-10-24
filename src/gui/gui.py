@@ -80,15 +80,11 @@ def main():
     root.mainloop()
 
 
-def draw_territories(map, points):
+def draw_territories(map):
     (display, root) = setup_tk()
 
     for triangle in map.polygons.keys():
-        display.drawTriangle(triangle.shape, "R")
-    
-    for point in points:
-        display.drawPoint(point, black)
-    display.add_label(points)
+        display.drawTriangle(triangle.shape, triangle.color)
 
     root.mainloop()
 
