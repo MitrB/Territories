@@ -1,6 +1,7 @@
 from src.vars.GLOBVAR import *
 import random
 
+
 class Map():
     """Collection of Polygons"""
     # pairs are polygons that share an edge: {edge: p1, p2}
@@ -42,5 +43,13 @@ class Territory(Polygon):
         super().__init__(shape)
 
         self.type = "zone"
-        colors = [green, swamp, sand, cold, fris, d_green]
-        self.color = random.choice(colors)
+        self.color = random.choice(biomes_list)
+
+        self.food_meat = random.uniform(0, 1)
+        self.food_green = random.uniform(0, 1)
+        self.food_drink = random.uniform(0, 1)
+        self.resource_wood = random.uniform(0, 1)
+        self.resource_stone = random.uniform(0, 1)
+        self.resource_minerals = random.uniform(0, 1)
+        self.natural_defence = random.uniform(0, 1)
+        self.natural_danger = random.uniform(0, 1)

@@ -1,5 +1,6 @@
 from random import randint
 from src.vars.GLOBVAR import *
+from src.math_functions.math_functions import *
 from enum import *
 import math
 
@@ -19,15 +20,27 @@ def generate_points(N=10, point_distribution=PointDistribution.RANDOM):
             points = [(math.floor(window_width/(2*N) + i*window_width/N), math.floor(window_height/(2*N) + j*window_height/N))
                       for i in range(N) for j in range(N)]  # NxN grid TODO: might want to make N total points
 
-    # points = __remove_duplicate_points(points)
+    points = __remove_duplicate_points(points)
     # points = __add_points_until_full(points, N)
     return points
 
+def generate_generic_triangulisation(points):
+    return calculate_pbp_triangulation(points)
+
+def generate_delauny_triangulisation(points):
+    triangles = calculate_pbp_triangulation(points.copy())
+    triangles = calculate_delaunay(triangles)
+    return triangles
+
+def delaunay_request(N=10):
+    points = generate_points(N)
+    triangles = generate_delauny_triangulisation(points)
+    return (points, triangles)
 
 def __remove_duplicate_points(points):
     unique_points = []
     for point in points:
-        if point not in points:
+        if point not in unique_points:
             unique_points.append(point)
 
     return unique_points
@@ -43,3 +56,4 @@ def __add_points_until_full(points, N):
 
 def __generate_random_point(width, height):
     return (randint(10, width - 10), randint(10, height - 10))
+

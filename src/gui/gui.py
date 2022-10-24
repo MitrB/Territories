@@ -2,14 +2,14 @@ from tkinter import *
 from logging import debug, info
 from random import randint, choice
 from math_functions.math_functions import *
-from .helper import *
+from src.math_functions.precalc import *
 import logging
 
 logging.basicConfig(level=logging.INFO, filename="debug.log", filemode="w")
 
 # disable/enable logging
 logging.disable(logging.DEBUG)
-logging.disable(logging.INFO)
+# logging.disable(logging.INFO)
 
 
 class Display(Frame):
@@ -51,18 +51,8 @@ class Display(Frame):
                 point[0], point[1]), fill="black", font=('Helvetica 10 bold'))
 
 
-def main():
-
-    # calculate
-    N = 25
-    points = generate_points(N)
-    info(points)
-    triangles = calculate_pbp_triangulation(points.copy())
-    info(triangles)
-    triangles = calculate_delaunay(triangles)
-    info(triangles)
-
-    # Tk
+def setup_tk():
+    # Setup Tk
     root = Tk()
     display = Display()
     w = str(window_width)
@@ -70,7 +60,16 @@ def main():
     root.geometry("%sx%s+0+0" % (w, h))
     root.configure(bg="white")
 
-    # draw
+    return (display, root)
+
+
+def main():
+    # Get delauny
+    (points, triangles) = delaunay_request()
+
+    (display, root) = setup_tk()
+
+    # Draw
     for triangle in triangles:
         display.drawTriangle(triangle)
         display.drawTriangleOutline(triangle)
@@ -81,19 +80,18 @@ def main():
     root.mainloop()
 
 
-def draw_territories(map):
-        # Tk
-    root = Tk()
-    display = Display()
-    w = str(window_width)
-    h = str(window_height)
-    root.geometry("%sx%s+0+0" % (w, h))
-    root.configure(bg="white")
+def draw_territories(map, points):
+    (display, root) = setup_tk()
 
     for triangle in map.polygons.keys():
-        display.drawTriangle(triangle.shape, triangle.color)
+        display.drawTriangle(triangle.shape, "R")
+    
+    for point in points:
+        display.drawPoint(point, black)
+    display.add_label(points)
 
     root.mainloop()
+
 
 if __name__ == '__main__':
     main()

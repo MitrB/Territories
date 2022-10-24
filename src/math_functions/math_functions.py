@@ -60,7 +60,6 @@ def calculate_pbp_triangulation(points):
         debug("DONE:")
         debug(points_done)
         convex_shape = convex(points_done)
-        convex_shape.append(convex_shape[0])
         debug("CONVEX:")
         debug(convex_shape)
         for i in range(0, len(convex_shape)-1):
@@ -212,6 +211,7 @@ def make_locally_delaunay(pair):
     for p in t2:
         if p not in t1:
             p_t1 = p
+
 
     if math.dist(p_t1, c[0]) < c[1]:
         t1 = (p_t1, p_t2, edge[0])
