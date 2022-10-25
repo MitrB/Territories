@@ -1,11 +1,11 @@
 from tkinter import *
 from logging import debug, info
 from random import randint, choice
-from math_functions.math_functions import *
+from src.math_functions.math_functions import *
 from src.math_functions.precalc import *
 import logging
 
-logging.basicConfig(level=logging.INFO, filename="debug.log", filemode="w")
+# logging.basicConfig(level=logging.INFO, filename="debug.log", filemode="w")
 
 # disable/enable logging
 logging.disable(logging.DEBUG)
@@ -76,6 +76,7 @@ def main():
     for point in points:
         display.drawPoint(point, black)
     display.add_label(points)
+
 
     root.mainloop()
 
