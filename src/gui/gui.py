@@ -3,13 +3,6 @@ from logging import debug, info
 from random import randint, choice
 from src.math_functions.math_functions import *
 from src.math_functions.precalc import *
-import logging
-
-# logging.basicConfig(level=logging.INFO, filename="debug.log", filemode="w")
-
-# disable/enable logging
-logging.disable(logging.DEBUG)
-# logging.disable(logging.INFO)
 
 
 class Display(Frame):
@@ -24,7 +17,6 @@ class Display(Frame):
         self.pack(fill=BOTH, expand=1)
 
         self.canvas = Canvas(self)
-
         self.canvas.pack(fill=BOTH, expand=YES)
 
     def drawPoint(self, point, color):
@@ -60,14 +52,16 @@ def setup_tk():
     root.geometry("%sx%s+0+0" % (w, h))
     root.configure(bg="white")
 
-    return (display, root)
+    return (root, display)
 
+def start_tk_loop(root):
+    root.mainloop()
 
 def main():
     # Get delauny
     (points, triangles) = delaunay_request()
 
-    (display, root) = setup_tk()
+    (root, display) = setup_tk()
 
     # Draw
     for triangle in triangles:
@@ -77,18 +71,12 @@ def main():
         display.drawPoint(point, black)
     display.add_label(points)
 
+    start_tk_loop(root)
 
-    root.mainloop()
 
-
-def draw_territories(map):
-    (display, root) = setup_tk()
-
+def draw_territories(display, map):
     for triangle in map.polygons.keys():
         display.drawTriangle(triangle.shape, triangle.color)
-
-    root.mainloop()
-
 
 if __name__ == '__main__':
     main()

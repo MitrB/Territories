@@ -16,6 +16,7 @@ def convex(points):
         hull.append(points.pop(0))
         while len(hull) > 2 and get_cross_product(hull[-3], hull[-2], hull[-1]) < 0:
             hull.pop(-2)
+    hull.append(start)
     return hull
 
 
