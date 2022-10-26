@@ -14,6 +14,7 @@ class Map():
         for p in polygons:
             self.polygons[p] = []
 
+    # Todo: call Polygon function probably
     def add_neighbour(self, polygon, polygon_ne):
         neighbour_list = self.polygons[polygon]
         self.polygons[polygon] = neighbour_list + [polygon_ne]
@@ -26,6 +27,10 @@ class Polygon():
         self.neighbours = []
         self.shape = shape
 
+    # Todo: check
+    def add_neighbour(self, polygon):
+        self.neighbours += [polygon]
+
     def __hash__(self):
         return hash(self.shape)
 
@@ -34,6 +39,8 @@ class Polygon():
 
     def __str__(self):
         return str(self.shape)
+
+
 
 
 class Territory(Polygon):
