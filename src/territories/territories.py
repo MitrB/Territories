@@ -10,7 +10,7 @@ possible_args = ["-p", "-s", "-l", "-d"]
 
 
 def main(args=sys.argv):
-    N = 850
+    N = 200
     save_points = False
     load_points = False
 
