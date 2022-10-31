@@ -1,9 +1,11 @@
 from src.territories.territory.territory import *
+from src.territories.nation.nation import *
 from src.math_functions.precalc import *
 from src.gui.gui import draw_territories, setup_tk, start_tk_loop
 from src.math_functions.math_functions import *
 from src.vars.logging_settings import config_logging
 import pickle
+import random
 import sys
 
 possible_args = ["-p", "-s", "-l", "-d"]
@@ -14,7 +16,7 @@ def main(args=sys.argv):
     save_points = False
     load_points = False
 
-    for i,a in enumerate(args):
+    for i, a in enumerate(args):
         if a == "-p":
             N = int(args[i+1])
         elif a == "-s":
@@ -49,18 +51,39 @@ def main(args=sys.argv):
         t = Territory(t)
         triangle_territories.append(t)
 
-    territories = Map(triangle_territories)
+    full_map = Map(triangle_territories)
 
     for pair in pairs.values():
-        territories.add_neighbour(pair[0], pair[1])
-        territories.add_neighbour(pair[1], pair[0])
-
+        for t in triangle_territories:
+            if t.shape == pair[0]:
+                for t2 in triangle_territories:
+                    if t2.shape == pair[1]:
+                        full_map.add_neighbour(t, t2)
+                        full_map.add_neighbour(t2, t)
 
     # gui
     (root, display) = setup_tk()
-    draw_territories(display, territories)
+
+    file_name = 'nation_names.txt'
+    with open(f'./Data/{file_name}') as names_file:
+        lines = names_file.readlines()
+        name = random.choice(lines)
+        nation = Nation(name, "#FF0000", full_map, display)
+        add_random_territory_to_nation(full_map, nation, root)
+        nation.add_random_territory()
+
+        nation2 = Nation(name, "#00FF00", full_map, display)
+        add_random_territory_to_nation(full_map, nation2, root)
+        nation2.add_random_territory()
+
+    draw_territories(display, full_map)
     # display.add_label(points)
     start_tk_loop(root)
+
+
+def add_random_territory_to_nation(full_map, nation, root):
+    random_territory = random.choice(list(full_map.polygons.keys()))
+    nation.add_territory_to_owned(random_territory)
 
 
 if __name__ == "__main__":

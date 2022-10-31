@@ -50,7 +50,8 @@ class Territory(Polygon):
         super().__init__(shape)
 
         self.type = "zone"
-        self.color = random.choice(biomes_list)
+        # self.color = random.choice(biomes_list)
+        self.color = grey
 
         self.food_meat = random.uniform(0, 1)
         self.food_green = random.uniform(0, 1)
@@ -60,3 +61,5 @@ class Territory(Polygon):
         self.resource_minerals = random.uniform(0, 1)
         self.natural_defence = random.uniform(0, 1)
         self.natural_danger = random.uniform(0, 1)
+
+        self.owned = False

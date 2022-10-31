@@ -8,6 +8,7 @@ fris = "#748c70"
 cold = "#70868c"
 swamp = "#2b302b"
 black = "#000000"
+grey = "#808080"
 
 
 # biomes
